@@ -1,0 +1,174 @@
+Q1. Explain GET and POST methods.
+
+Q2. Why is request used in Flask?
+
+Q3. Why is redirect() used in Flask?
+
+Q4. What are templates in Flask? Why is the render_template() function used?
+
+Q5. Create a simple API. Use Postman to test it. Attach the screenshot of the output in the Jupyter Notebook.
+
+
+
+
+
+
+# Q1. Explain GET and POST methods.
+GET Method:
+
+The GET method is used to request data from a specified resource. It is one of the most common HTTP methods used to retrieve information from a server.
+When a GET request is made, data is appended to the URL as query parameters (in the URL itself).
+Characteristics of GET:
+Data is sent in the URL (visible to the user).
+It is a safe method (doesn't modify data on the server).
+It can be cached and bookmarked.
+It has a limited amount of data that can be sent (depending on the browser).
+POST Method:
+
+The POST method is used to send data to a server to create or update a resource. It submits data in the body of the request, which is not visible in the URL.
+POST requests are generally used when submitting form data or uploading a file.
+Characteristics of POST:
+Data is sent in the body of the request (not visible in the URL).
+It is not safe (it can modify server data).
+It cannot be cached and bookmarked.
+There is no limit to the amount of data that can be sent.
+Example:
+
+A GET request would be used when you want to retrieve a user's profile page:
+GET /user/profile
+A POST request would be used when you want to submit a login form:
+POST /user/login
+
+
+
+
+# Q2. Why is request used in Flask?
+In Flask, the request object is used to handle incoming data from the client (such as data submitted through forms, query parameters, or headers). It provides access to all the data associated with a request, including:
+
+Form Data: You can access form data submitted via POST requests using request.form.
+Query Parameters: You can retrieve query parameters from the URL using request.args.
+Request Headers: You can access headers of the request via request.headers.
+Files: The request.files attribute can be used to handle file uploads.
+The request object helps you interact with the data sent by the client and process it on the server.
+
+Example:
+
+python
+
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    username = request.form['username']
+    return f'Hello, {username}!'
+
+
+
+
+
+# Q3. Why is redirect() used in Flask?
+The redirect() function in Flask is used to redirect the client to a different URL. This is commonly used when you want to redirect the user to another route after they have submitted a form or performed an action. It sends an HTTP response to the browser with a status code indicating a redirection (usually 302 or 301), along with the new location where the client should be redirected.
+
+Example:
+
+python
+
+from flask import Flask, redirect, url_for
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return 'Home Page'
+
+@app.route('/login')
+def login():
+    return 'Login Page'
+
+@app.route('/redirect_home')
+def redirect_home():
+    return redirect(url_for('home'))
+In this example, visiting /redirect_home would redirect the user to the / route (the home page).
+
+
+
+
+
+#Q4. What are templates in Flask? Why is the render_template() function used?
+Templates in Flask are files that contain the HTML structure of the web page. Templates allow you to separate the presentation layer from the Python code, making your application more modular and maintainable. Flask uses Jinja2 as its default template engine, which allows you to embed Python-like expressions within the HTML.
+
+Templates can contain variables, control structures (such as loops or conditionals), and inheritance (where one template can extend another).
+
+The render_template() function is used to render an HTML template and pass data to the template to dynamically generate content.
+
+Why is render_template() used?
+
+Dynamic Content: It allows you to pass data (variables, lists, etc.) from your Python code to the HTML page, making the content dynamic.
+Separation of Concerns: It helps separate logic (Python code) from the presentation (HTML), making the code cleaner and more maintainable.
+Example:
+
+python
+
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template('index.html', title="Home Page", user="Alice")
+In this example, index.html would use the passed variables title and user to render the content dynamically.
+
+
+
+
+
+# Q5. Create a simple API. Use Postman to test it. Attach the screenshot of the output in the Jupyter Notebook.
+Here is a simple API example using Flask that provides a basic RESTful service for managing users. It supports the GET and POST methods:
+
+python
+
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+# Sample data (in-memory store for demonstration)
+users = [
+    {'id': 1, 'name': 'John Doe', 'email': 'john@example.com'},
+    {'id': 2, 'name': 'Jane Smith', 'email': 'jane@example.com'}
+]
+
+# GET request to fetch all users
+@app.route('/users', methods=['GET'])
+def get_users():
+    return jsonify({'users': users})
+
+# POST request to add a new user
+@app.route('/users', methods=['POST'])
+def add_user():
+    new_user = request.get_json()
+    users.append(new_user)
+    return jsonify(new_user), 201
+
+if __name__ == '__main__':
+    app.run(debug=True)
+To test this API using Postman:
+GET Request:
+
+URL: http://127.0.0.1:5000/users
+Method: GET
+This will return the list of users in JSON format.
+POST Request:
+
+URL: http://127.0.0.1:5000/users
+Method: POST
+Body (raw, JSON):
+json
+Copy code
+{
+  "id": 3,
+  "name": "Alice Cooper",
+  "email": "alice@example.com"
+}
+This will add a new user to the list and return the added user in JSON format.
